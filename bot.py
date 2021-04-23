@@ -19,7 +19,7 @@ awssession = boto3.Session(
 
 def check_running():
     ec2 = awssession.resource('ec2')
-    for instance in ec2.instances.filter():
+    for instance in ec2.instances.filter(InstanceIds=list(os.getenv('TARGET_INSTANCES').split(", "))):
         if instance.state['Code']==16:
             return 1
     else: return 0
