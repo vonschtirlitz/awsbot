@@ -74,10 +74,16 @@ async def on_message(message):
                 await message.channel.send('an error happened during ip address allocation ```'+str(e)+'```')
                 return
 
-            #try:
-                #instance = ec2.instance('0b3db6f17303693a2')
+            try:
+                instance = ec2.instance(os.getenv('MINECRAFT_INSTANCE'))
+                response = instance.start(DryRun = False)
+                print(response)
+            except ClientError as e:
+                print(e)
+                await message.channel.send('an error happened during server start ```'+str(e)+'```')
+                return
 
-
+            await message.channel.send('Minecraft server successfully started on '+os.getenv('IP_ADDR')', please wait a few minutes to allow mods to load')
 
         if parts[1] == 'launcharma':
             print("launcharma requested by "+message.author.display_name+" ("+str(message.author.id)+")\n")
@@ -97,6 +103,18 @@ async def on_message(message):
                 print(e)
                 await message.channel.send('an error happened during ip address allocation ```'+str(e)+'```')
                 return
+
+            #start server
+            try:
+                instance = ec2.Instance(os.getenv('ARMA_INSTANCE'))
+                response = instance.start(DryRun = False)
+                print(response)
+            except ClientError as e:
+                print(e)
+                await message.channel.send('an error happened during server start ```'+str(e)+'```')
+                return
+
+            await message.channel.send('Arma server successfully started on '+os.getenv('IP_ADDR')', please wait a few minutes to allow mods to load')
 
 
     else:
