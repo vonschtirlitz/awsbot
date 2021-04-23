@@ -66,12 +66,12 @@ async def on_message(message):
 
             #allocate ip addr
             try:
-                classicaddress = ec2.ClassicAddress('54.176.17.18')
-                response = classicaddress.associate(InstanceId='i-0b3db6f17303693a2', AllowReassociation=True)
+                classicaddress = ec2.ClassicAddress(os.getenv('IP_ADDR'))
+                response = classicaddress.associate(InstanceId=os.getenv('MINECRAFT_INSTANCE'), AllowReassociation=True)
                 print(response)
             except ClientError as e:
                 print(e)
-                await message.channel.send('an error happened \:( ```'+e+'```')
+                await message.channel.send('an error happened during ip address allocation ```'+str(e)+'```')
                 return
 
             #try:
@@ -90,13 +90,15 @@ async def on_message(message):
 
             #allocate ip addr
             try:
-                classicaddress = ec2.ClassicAddress('54.176.17.18')
-                response = classicaddress.associate(InstanceId='i-0318d34cac4f9281a', AllowReassociation=True)
+                classicaddress = ec2.ClassicAddress(os.getenv('IP_ADDR'))
+                response = classicaddress.associate(InstanceId=os.getenv('ARMA_INSTANCE'), AllowReassociation=True)
                 print(response)
             except ClientError as e:
                 print(e)
-                await message.channel.send('an error happened during ip address allocation\:( ```'+e+'```')
+                await message.channel.send('an error happened during ip address allocation ```'+str(e)+'```')
                 return
+
+
     else:
         if str(message.channel.type) == "private":
             time.sleep(random.randint(3,5))
