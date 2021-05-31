@@ -4,12 +4,14 @@ import boto3
 from botocore.exceptions import ClientError
 import random
 import time
+import datetime
 
 from dotenv import load_dotenv
 
 load_dotenv()
 bottoken = os.getenv('BOT_TOKEN')
-active_server_var = 0;
+activator_name = ""
+active_timestamp = ""
 
 discordclient = discord.Client()
 awssession = boto3.Session(
@@ -63,6 +65,7 @@ async def on_message(message):
 
             ec2 = awssession.resource('ec2')
             await message.channel.send('Starting a Minecraft server...')
+            #activator_name = message.author
 
             #allocate ip addr
             try:
@@ -93,6 +96,8 @@ async def on_message(message):
 
             ec2 = awssession.resource('ec2')
             await message.channel.send('Starting an Arma 3 server...')
+            #activator_name = message.author
+            #active_timestamp = datetime.now()
 
             #allocate ip addr
             try:
@@ -115,6 +120,21 @@ async def on_message(message):
                 return
 
             await message.channel.send('Arma server successfully started on '+os.getenv('IP_ADDR')+', please wait a few minutes to allow mods to load')
+
+        if parts[1] == 'stop':
+            #if message.author != activator_name:
+            #    await message.channel.send(activator_name.display_name + " holds delete access for the instance they started, ask them to relinquish it, or wait.")
+
+            ec2 = awssession.resource('ec2')
+            for instance in ec2.instances.filter(InstanceIds=list(os.getenv('TARGET_INSTANCES').split(", "))):
+                response = instance.stop()
+                #print("stopped")
+                print(response)
+            await message.channel.send("Servers successfully stopped")
+            return
+
+
+
 
 
     else:
